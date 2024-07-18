@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+    <!-- Master Material Tree View -->
+        <record id="view_master_material_tree" model="ir.ui.view">
+            <field name="name">view.master.material.tree</field>
+            <field name="model">master.material</field>
+            <field name="arch" type="xml">
+                <tree string="Master Material">
+                    <field name="material_code"/>
+                    <field name="material_name"/>
+                    <field name="material_type"/>
+                    <field name="material_buy_price"/>
+                    <field name="supplier_id"/>
+                </tree>
+            </field>
+        </record>
+
+    <!-- Master Material Form View -->
+        <record id="view_master_material_form" model="ir.ui.view">
+            <field name="name">view.master.material.form</field>
+            <field name="model">master.material</field>
+            <field name="arch" type="xml">
+                <form string="Master Material">
+                    <sheet>
+                        <!-- <div class="oe_title">
+                            <h1>
+                                <field name="name" class="oe_inline" placeholder="Name"/>
+                            </h1>
+                        </div> -->
+                        <group string="Master Material">
+                            <group>
+                                <field name="material_code" required="1"/>
+                                <field name="material_name" required="1"/>
+                                <field name="material_type" required="1"/>
+                            </group>
+                            <group>
+                                <field name="supplier_id" required="1" options="{'no_open':True,'no_create':True}"/>
+                                <field name="material_buy_price" required="1"/>
+                            </group>                            
+                        </group>
+                        <notebook>                            
+                            <page name="audit_trail_page" string="Audit Trail" attrs="{'invisible':[('create_date','=',False)]}">
+                                <group>
+                                    <group>
+                                        <field name="create_uid" readonly="1"/>
+                                        <field name="create_date" readonly="1"/>
+                                    </group>
+                                    <group>
+                                        <field name="write_uid" readonly="1"/>
+                                        <field name="write_date" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    <!-- Master Material Search View -->
+        <record id="view_master_material_search" model="ir.ui.view">
+            <field name="name">master.material.search</field>
+            <field name="model">master.material</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="material_code"/>
+                    <field name="material_name"/>
+                    <field name="material_type"/>
+                    <field name="supplier_id"/>
+                    <filter name="fabric" string="Fabric" domain="[('material_type','=','fabric')]"/>
+                    <filter name="jeans" string="Jeans" domain="[('material_type','=','jeans')]"/>
+                    <filter name="cotton" string="Cotton" domain="[('material_type','=','cotton')]"/>
+                    <separator/>
+                    <group string="Group By">
+                        <filter name="material_type" string="Material Type" context="{'group_by': 'material_type'}"/>
+                        <filter name="supplier_id" string="Supplier" context="{'group_by': 'supplier_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+    <!-- Action Master Material -->
+        <record id="action_master_material" model="ir.actions.server">
+            <field name="name">Master Material</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="master_material.model_master_material"/>
+            <field name="state">code</field>
+            <field name="code">
+                action = env['master.material'].action_master_material_tree()
+            </field>
+        </record>
+
+        <menuitem id="master_material_top_menu" name="Master" sequence="01" web_icon="master_material,static/src/img/master_material_menu_icon.png"/>
+        <menuitem id="master_material_sub_menuitem" name="Master" parent="master_material_top_menu" sequence="01"/>
+        <menuitem id="master_material_menuitem" parent="master_material_sub_menuitem" action="action_master_material" sequence="01" groups="master_material.master_material_group_read"/>
+
+    </data>
+</odoo>
